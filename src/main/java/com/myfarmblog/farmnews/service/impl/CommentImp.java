@@ -10,6 +10,7 @@ import com.myfarmblog.farmnews.repository.PostRepository;
 import com.myfarmblog.farmnews.service.CommentService;
 import com.myfarmblog.farmnews.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class CommentImp implements CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final ModelMapper modelMapper;
     @Override
     public CommentRequest createComment(long postId, CommentRequest commentRequest) {
         //convert comments gotten in commentRequest to comment entity inorder to save to the db
@@ -88,19 +90,9 @@ public class CommentImp implements CommentService {
     }
 
     private CommentRequest mapToDto(Comment comment){
-        return CommentRequest.builder()
-                .id(comment.getId())
-                .name(comment.getName())
-                .email(comment.getEmail())
-                .body(comment.getBody())
-                .build();
+        return modelMapper.map(comment,CommentRequest.class);
     }
     private Comment mapToEntity(CommentRequest request){
-        return Comment.builder()
-                .id(request.getId())
-                .name(request.getName())
-                .email(request.getEmail())
-                .body(request.getBody())
-                .build();
+        return modelMapper.map(request,Comment.class);
     }
 }

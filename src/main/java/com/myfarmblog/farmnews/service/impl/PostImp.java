@@ -7,6 +7,7 @@ import com.myfarmblog.farmnews.payload.response.PostResponse;
 import com.myfarmblog.farmnews.repository.PostRepository;
 import com.myfarmblog.farmnews.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,12 +15,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
 public class PostImp implements PostService {
     private final PostRepository postRepository;
+    private final ModelMapper modelMapper;
     @Override
     public PostRequest createBlogPost(PostRequest request) {
         /*create post with the post dto, map it to the entity to be able to save it to the DB and then map the saved
@@ -43,7 +45,7 @@ public class PostImp implements PostService {
         List<Post> postList = allBlogPostInDb.getContent();
         //step 2: convert posts gotten from the db to dto(remember you don't ever expose your db to the endpoints)
         //returned using method reference Or Lambda
-        List<PostRequest> content= postList.stream().map(this::mapToDto).collect(Collectors.toList());
+        List<PostRequest> content= postList.stream().map(this::mapToDto).toList();
         // return allBlogPostInDb.stream().map(post -> mapToDto(post)).collect(Collectors.toList()); using lambda
         PostResponse response = new PostResponse();
         response.setContent(content);
@@ -85,20 +87,10 @@ public class PostImp implements PostService {
     }
 
     private  PostRequest mapToDto (Post post){
-        return PostRequest.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .description(post.getDescription())
-                .content(post.getContent())
-                .build();
+        return modelMapper.map(post,PostRequest.class);
     }
     private Post mapToEntity(PostRequest request){
-        return Post.builder()
-                .id(request.getId())
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .content(request.getContent())
-                .build();
+        return modelMapper.map(request, Post.class);
     }
 }
 
