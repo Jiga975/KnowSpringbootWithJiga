@@ -3,6 +3,9 @@ package com.myfarmblog.farmnews.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Setter
 @Getter
 @ToString
@@ -26,4 +29,6 @@ public class Post {
 
     @Column(name = "content", nullable = false)
     private String content;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true )
+    private Set<Comment> comment = new HashSet<>();
 }
