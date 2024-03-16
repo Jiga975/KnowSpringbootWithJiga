@@ -2,6 +2,7 @@ package com.myfarmblog.farmnews.controller;
 
 import com.myfarmblog.farmnews.payload.requests.CommentRequest;
 import com.myfarmblog.farmnews.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class CommentController {
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentRequest> createComment(@PathVariable(value = "postId") long postId,
-                                 @RequestBody CommentRequest commentRequest){
+                                                        @Valid @RequestBody CommentRequest commentRequest){
       return new ResponseEntity<>(commentService.createComment(postId, commentRequest),HttpStatus.CREATED);
     }
 
@@ -34,7 +35,7 @@ public class CommentController {
     @PutMapping("/posts/{postId}/comments/{id}")
     public ResponseEntity<CommentRequest>updateComment(@PathVariable(value = "postId") Long postId,
                                                        @PathVariable(value = "id") long commentId,
-                                                       @RequestBody CommentRequest request){
+                                                       @Valid  @RequestBody CommentRequest request){
         return new ResponseEntity<>(commentService.updateComment(postId, commentId, request),HttpStatus.OK);
     }
     @DeleteMapping("/posts/{postId}/comments/{id}")

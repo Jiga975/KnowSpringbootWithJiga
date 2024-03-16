@@ -5,6 +5,7 @@ import com.myfarmblog.farmnews.payload.requests.PostRequest;
 import com.myfarmblog.farmnews.payload.response.PostResponse;
 import com.myfarmblog.farmnews.service.PostService;
 import com.myfarmblog.farmnews.utils.AppConstants;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<PostRequest>createPost(@RequestBody PostRequest postRequest){
+    public ResponseEntity<PostRequest>createPost(@Valid @RequestBody PostRequest postRequest){
         return new ResponseEntity<>(postService.createBlogPost(postRequest), HttpStatus.CREATED);
     }
 
@@ -38,7 +39,7 @@ public class PostController {
         return new ResponseEntity<>(postService.getPostById(postId), HttpStatus.OK);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<PostRequest>updatePost(@RequestBody PostRequest request,
+    public ResponseEntity<PostRequest>updatePost(@Valid @RequestBody PostRequest request,
                                                  @PathVariable(name = "id") long id){
         return new ResponseEntity<>(postService.updatePost(request,id), HttpStatus.OK);
     }
