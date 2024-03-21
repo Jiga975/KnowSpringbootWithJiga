@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+    public static UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         User user = userRepository.findByemailOrUsername(usernameOrEmail,usernameOrEmail)
                 .orElseThrow(()->new UsernameNotFoundException("user with: "+usernameOrEmail+" not found"));
         return new org.springframework.security.core.userdetails.User(

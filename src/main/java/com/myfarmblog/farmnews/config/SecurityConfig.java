@@ -1,6 +1,8 @@
 package com.myfarmblog.farmnews.config;
 
 import com.myfarmblog.farmnews.securitty.CustomUserDetailsService;
+import com.myfarmblog.farmnews.securitty.JwtAuthenticationEntryPoint;
+import com.myfarmblog.farmnews.securitty.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +18,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 @EnableAsync
 @Configuration
 @EnableWebSecurity
@@ -23,12 +27,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthenticationFilter authenticationFilter;
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder(); //password encryption
     }
 
+
+
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
+
+        // Execute JwtAuthenticationFilter before the UsernamePasswordAuthenticationFilter of spring security
+        httpSecurity .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         httpSecurity.csrf(CsrfConfigurer::disable) //the csrf is enabled automatically for security reasons, disable it while customizing
                 .authorizeHttpRequests(
                         requests->requests
@@ -36,8 +49,11 @@ public class SecurityConfig {
                                 //state the link to the request you wish to grant access
                                 .permitAll()//permit all requests coming from the stated link
                                 .anyRequest()
-                                .authenticated());//authenticate anyRequest except the one explicitly stated above
-        httpSecurity.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                                .authenticated())//authenticate anyRequest except the one explicitly stated above
+                                .exceptionHandling(exception -> exception
+                                .authenticationEntryPoint(authenticationEntryPoint))
+                                .sessionManagement(session->session
+                                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return httpSecurity.build();
 
     }
