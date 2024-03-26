@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostRequest {
-    private Long id;
+
     @NotEmpty //post tittle should not be null or empty
     @Size(min = 3, message = "Post tittle should have at least 3 characters")
     private String title;

@@ -1,4 +1,4 @@
-package com.myfarmblog.farmnews.entity;
+package com.myfarmblog.farmnews.entity.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @EnableAsync
 @Configuration
 @EnableWebSecurity
@@ -45,9 +47,14 @@ public class SecurityConfig {
         httpSecurity.csrf(CsrfConfigurer::disable) //the csrf is enabled automatically for security reasons, disable it while customizing
                 .authorizeHttpRequests(
                         requests->requests
-                                .requestMatchers(HttpMethod.POST,"api/auth/**")
+                                .requestMatchers(HttpMethod.POST,"api/auth/**").permitAll()
                                 //state the link to the request you wish to grant access
-                                .permitAll()//permit all requests coming from the stated link
+                                .requestMatchers(antMatcher("/v3/api-docs/**"),
+                                        antMatcher("/swagger-ui/**"),
+                                        antMatcher("/swagger-resources/**"),
+                                        antMatcher("/swagger-ui.html/**"),
+                                        antMatcher("/webjars/**")).permitAll()
+                                //permit all requests coming from the swagger link above
                                 .anyRequest()
                                 .authenticated())//authenticate anyRequest except the one explicitly stated above
                                 .exceptionHandling(exception -> exception

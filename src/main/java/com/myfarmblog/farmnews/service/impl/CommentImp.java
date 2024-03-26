@@ -1,7 +1,7 @@
 package com.myfarmblog.farmnews.service.impl;
 
-import com.myfarmblog.farmnews.entity.Comment;
-import com.myfarmblog.farmnews.entity.Post;
+import com.myfarmblog.farmnews.entity.model.Comment;
+import com.myfarmblog.farmnews.entity.model.Post;
 import com.myfarmblog.farmnews.exceptions.BlogAPIException;
 import com.myfarmblog.farmnews.exceptions.ResourceNotFoundException;
 import com.myfarmblog.farmnews.payload.requests.CommentRequest;

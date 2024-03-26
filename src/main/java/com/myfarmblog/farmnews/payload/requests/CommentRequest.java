@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentRequest {
-    private Long id;
+    
     @NotEmpty
     @Size(min =6, message = "Name must be upto 6 characters")
     private String name;

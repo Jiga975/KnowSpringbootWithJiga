@@ -1,6 +1,6 @@
 package com.myfarmblog.farmnews.repository;
 
-import com.myfarmblog.farmnews.entity.User;
+import com.myfarmblog.farmnews.entity.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

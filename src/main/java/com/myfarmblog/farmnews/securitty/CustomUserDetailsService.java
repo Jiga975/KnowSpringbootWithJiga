@@ -1,7 +1,7 @@
 package com.myfarmblog.farmnews.securitty;
 
-import com.myfarmblog.farmnews.entity.Role;
-import com.myfarmblog.farmnews.entity.User;
+import com.myfarmblog.farmnews.entity.model.Role;
+import com.myfarmblog.farmnews.entity.model.User;
 import com.myfarmblog.farmnews.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

@@ -30,7 +30,7 @@ public class JwtTokenProvider {
                 .signWith(jwtKey,SignatureAlgorithm.HS512)
                 .compact();
     }
-    public String generateToken(Authentication authentication, Long milliSeconds) {
+    public String generateToken(Authentication authentication) {
         String username = authentication.getName();
 
         return generateNewToken(username, milliSeconds);

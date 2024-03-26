@@ -1,5 +1,6 @@
-package com.myfarmblog.farmnews.entity;
+package com.myfarmblog.farmnews.entity.model;
 
+import com.myfarmblog.farmnews.entity.model.Comment;
 import jakarta.persistence.*;
 import lombok.*;
 
