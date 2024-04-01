@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,17 +21,18 @@ import java.util.stream.Collectors;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
-    public static UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+
         User user = userRepository.findByemailOrUsername(usernameOrEmail,usernameOrEmail)
                 .orElseThrow(()->new UsernameNotFoundException("user with: "+usernameOrEmail+" not found"));
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
-                rolesToAuthorities(user.getRoles())
-        );
+                rolesToAuthorities(user)
+         );
+
     }
-//created a method that converts roles in the entity to granted authorities
-    private Collection<? extends GrantedAuthority> rolesToAuthorities(Set<Role>roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+    public Collection<GrantedAuthority> rolesToAuthorities(User user){
+        return Collections.singleton(new SimpleGrantedAuthority(String.valueOf(user.getRole())));
     }
 }

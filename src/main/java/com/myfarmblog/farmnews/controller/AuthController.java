@@ -19,11 +19,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 
 @RequiredArgsConstructor
@@ -37,24 +40,6 @@ public class AuthController {
     private final JwtTokenProvider tokenProvider;
     private final AuthService authService;
 
-//    @PostMapping("SignUp")
-//    public ResponseEntity<?> RegisterUser(@RequestBody UserSignUpRequest userSignUpRequest){
-//        if (userRepository.existByUsername(userSignUpRequest.getUsername())){
-//            return new ResponseEntity<>("username already exist",HttpStatus.BAD_REQUEST);
-//        }
-//        if ((userRepository.existsByEmail(userSignUpRequest.getEmail()))){
-//            return new ResponseEntity<>("email already exist",HttpStatus.BAD_REQUEST);
-//        }
-//        User user = User.builder()
-//                .name(userSignUpRequest.getName())
-//                .username(userSignUpRequest.getUsername())
-//                .email(userSignUpRequest.getEmail())
-//                .password(passwordEncoder.encode(userSignUpRequest.getPassword()))
-//                .roles(Collections.singleton(rolerepository.findByName("ROLE_ADMIN").get()))
-//                .build();
-//        userRepository.save(user);
-//        return new ResponseEntity<>("new user created",HttpStatus.CREATED);
-//    }
 
     @PostMapping("/register-user")
     public ResponseEntity<ApiResponse<UserSignUpResponse>> registerUser(@Valid @RequestBody UserSignUpRequest userSignUpRequest) {
@@ -66,13 +51,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> userLogin(@RequestBody LoginRequest loginRequest){
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        //get token from token provider
-        String token = tokenProvider.generateToken(authentication);
-        
-        return ResponseEntity.ok(new JwtAuthResponse(token));
+    public ResponseEntity<ApiResponse<JwtAuthResponse>> login(@Valid @RequestBody LoginRequest loginRequest) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        return authService.login(loginRequest);
     }
+    @GetMapping("/logout")
+    private ResponseEntity<ApiResponse<String>> logout(){
+        authService.logout();
+        return ResponseEntity.ok(new ApiResponse<>("Logout Successfully"));
+    }
+
 }

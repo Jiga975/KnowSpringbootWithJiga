@@ -30,10 +30,10 @@ public class JwtTokenProvider {
                 .signWith(jwtKey,SignatureAlgorithm.HS512)
                 .compact();
     }
-    public String generateToken(Authentication authentication) {
-        String username = authentication.getName();
+    public String generateToken(Authentication authentication, Long milliSeconds) {
+        String email = authentication.getName();
 
-        return generateNewToken(username, milliSeconds);
+        return generateNewToken(email,milliSeconds);
     }
 
     //getting username from token
@@ -51,7 +51,6 @@ public class JwtTokenProvider {
                     .setSigningKey(jwtKey)
                     .build()
                     .parse(token);
-
             return true;
         } catch (MalformedJwtException e) {
             log.warn("Invalid JWT Token");
@@ -66,6 +65,18 @@ public class JwtTokenProvider {
             log.warn("JWT Claims string is empty");
             throw new JwtException("JWT Claims string is empty");
         }
+    }
+
+    public String generateSignUpVerificationToken(String email, Long milliSeconds){
+        Date currentDate = new Date();
+        Date expireDate = new Date(System.currentTimeMillis() + milliSeconds);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(currentDate)
+                .setExpiration(expireDate)
+                .signWith(jwtKey,SignatureAlgorithm.HS512)
+                .compact();
     }
 }
 

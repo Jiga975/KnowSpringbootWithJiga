@@ -1,15 +1,19 @@
 package com.myfarmblog.farmnews.payload.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.myfarmblog.farmnews.entity.enums.Role;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class JwtAuthResponse {
-    private String accessToken;
-    private String tokenType = "Bearer";
-
-    public JwtAuthResponse(String accessToken) {
-        this.accessToken = accessToken;
-    }
+    Long id;
+    String name;
+    String email;
+    Role role;
+    String accessToken;
+    String refreshToken;
+    String tokenType = "Bearer";
 }
